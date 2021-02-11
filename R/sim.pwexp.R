@@ -49,67 +49,55 @@
 #' \item{calendarCutFA:}{Data CutOff Time (DCO) for FA;}
 #' }
 #' @examples
+#' \describe{
+#' \item{Example (1)}{Simulate 10 samples from proportional hazards scenario. 
+#' Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 
+#' HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
+#' IA and FA are performed at 397 and 496 events respectively.}
 #' N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
-#' targetEvents = c(397, 496); lambda0 = log(2) / m0; lambda1 = log(2)/m0*hr; cuts = NULL; 
+#' targetEvents = c(397, 496); lambda0 = log(2) / m0; lambda1 = log(2)/m0*hr; cuts = NULL;
 #' sim.ph = sim.pwexp(nSim=10, N = N, A = A, w=w, r=r, lambda0=lambda0, lambda1= lambda1, cuts=cuts, dropOff0= dropOff0, dropOff1= dropOff1, targetEvents = targetEvents)
+#' km.IA<-survival::survfit(survival::Surv(survTimeCutIA,1-cnsrCutIA)~treatment,data=sim.ph[sim==1])
+#' plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
+#' km.FA<-survival::survfit(survival::Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data=sim.ph[sim==1])
+#' plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
+#' 
+#' \item{Example (2)}{Simulate 10 samples with delayed effect at month 6;
+#'  control arm has constant hazard (median 11.7 mo) and experimental arm has hr = 0.65 after delay.
+#'  Total 672 pts, 1:1 randomization, control median OS 11.7 mo. 
+#' HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
+#' IA and FA are performed at 397 and 496 events respectively.}
+#' N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
+#' targetEvents = c(397, 496); cuts = 6
+#' lambda0 = log(2) / m0; lambda1 = c(log(2)/m0, log(2)/m0*hr)
+#' 
+#' sim.delay6 = sim.pwexp(nSim=1, N = N, A = A, w=w, r=r, lambda0=lambda0, lambda1=lambda1, cuts=cuts, dropOff0= dropOff0, dropOff1= dropOff1, targetEvents = targetEvents)
+#' km.IA<-survival::survfit(survival::Surv(survTimeCutIA,1-cnsrCutIA)~treatment,data=sim.delay6[sim==1])
+#' plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
+#' km.FA<-survival::survfit(survival::Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data= sim.delay6[sim==1])
+#' plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
+#' 
+#' \item{Example (3)}{Simulate 10 samples with delayed effect at month 6 
+#' Control arm has crossover to subsequent IO after 24 mo, so its hazard decreases 20%.
+#' control arm has constant hazard (median 11.7 mo) and experimental arm has 
+#' hr = 1 and 0.65 at intervals (0, 6) and (6, 24) respectively.}
+#' Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 
+#' HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
+#' IA and FA are performed at 397 and 496 events respectively.
+#' N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
+#' targetEvents = c(397, 496); cuts = c(6, 24); crossTime = 24; crossEffect = 0.8
+#' lambda0 = log(2)/m0*c(1, 1, crossEffect); lambda1 = log(2)/m0*c(1, hr, hr)
+#' 
+#' sim.delay6crs=sim.pwexp(nSim=10,N=N,A=A,w=w,r=r,lambda0=lambda0, lambda1=lambda1,cuts=cuts,dropOff0=dropOff0,dropOff1=dropOff1, targetEvents=targetEvents)
+#' km.IA<-survival::survfit(survival::Surv(survTimeCutIA,1-cnsrCutIA)~treatment,data=sim.delay6crs[sim==1])
+#' plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
+#' km.FA<-survival::survfit(survival::Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data= sim.delay6crs[sim==1])
+#' plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
+#' 
+#' }
 #' @export
 sim.pwexp = function(nSim=100, N = 672, A = 21, w=1.5, r=1, lambda0=log(2)/11.7, lambda1=log(2)/11.7*0.745, cuts=NULL, dropOff0=0, dropOff1=0, targetEvents = c(397, 496)) {
-  ########################################################################################
-  ########################################################################################
-  # EXAMPLE (1) Simulate 10 samples from proportional hazards scenario
-  # #################
-  # Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 
-  # HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
-  # IA and FA are performed at 397 and 496 events respectively.
-  # N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
-  # targetEvents = c(397, 496)
-  # lambda0 = log(2) / m0; lambda1 = log(2)/m0*hr; cuts = NULL; 
-  # 
-  # sim.ph = sim.pwexp(nSim=10, N = N, A = A, w=w, r=r, lambda0=lambda0, lambda1= lambda1, cuts=cuts, dropOff0= dropOff0, dropOff1= dropOff1, targetEvents = targetEvents)
-  #
-  #km.IA<-survfit(Surv(survTimeCutIA,1-cnsrCutIA)~treatment,data=sim.ph[sim==1])
-  #plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-  #km.FA<-survfit(Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data=sim.ph[sim==1])
-  #plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-  ########################################################################################
-  # EXAMPLE (2) Simulate 10 samples with delayed effect at month 6;
-  #  control arm has constant hazard (median 11.7 mo) and experimental arm has hr = 0.65 
-  #  after delay. 
-  # ############################################################
-  # Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 
-  # HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
-  # IA and FA are performed at 397 and 496 events respectively.
-  # N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
-  # targetEvents = c(397, 496); cuts = 6
-  # lambda0 = log(2) / m0; lambda1 = c(log(2)/m0, log(2)/m0*hr)
-  # 
-  #sim.delay6 = sim.pwexp(nSim=1, N = N, A = A, w=w, r=r, lambda0=lambda0, lambda1=lambda1, cuts=cuts, dropOff0= dropOff0, dropOff1= dropOff1, targetEvents = targetEvents)
-  #km.IA<-survfit(Surv(survTimeCutIA,1-cnsrCutIA)~treatment,data=sim.delay6[sim==1])
-  #plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-  #km.FA<-survfit(Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data= sim.delay6[sim==1])
-  #plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-  ########################################################################################
-  # EXAMPLE (3) Simulate 10 samples with delayed effect at month 6; 
-  # Control arm has crossover to subsequent IO after 24 mo, so its hazard decreases 20%.
-  # control arm has constant hazard (median 11.7 mo) and experimental arm has 
-  # hr = 1 and 0.65 at intervals (0, 6) and (6, 24) respectively.
-  # #################
-  # Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 
-  # HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
-  # IA and FA are performed at 397 and 496 events respectively.
-  # N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
-  # targetEvents = c(397, 496); cuts = c(6, 24); crossTime = 24; crossEffect = 0.8
-  # lambda0 = log(2)/m0*c(1, 1, crossEffect); lambda1 = log(2)/m0*c(1, hr, hr)
-  # 
-  #sim.delay6crs=sim.pwexp(nSim=10,N=N,A=A,w=w,r=r,lambda0=lambda0, lambda1=lambda1,cuts=cuts,dropOff0=dropOff0,dropOff1=dropOff1, targetEvents=targetEvents)
-  #km.IA<-survfit(Surv(survTimeCutIA,1-cnsrCutIA)~treatment,data=sim.delay6crs[sim==1])
-  #plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-  #km.FA<-survfit(Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data= sim.delay6crs[sim==1])
-  #plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-  ########################################################################################
-  
-  
-  ###################################
+  library(dplyr)
   nEachMonth = f.nEachMonth(N=N, A=A, w=w, r=r)
   
   gamma = nEachMonth$n0 + nEachMonth$n1
