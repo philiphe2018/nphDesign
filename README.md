@@ -1,5 +1,5 @@
 # R Package {nphDesign}
-Steps to install this package on your R console.
+Steps to install this package on your R console. The required R version is 4.0.3 or later.
 
 install.packages("devtools");            
 install.packages("roxygen2");                        
