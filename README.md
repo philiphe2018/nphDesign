@@ -1,4 +1,4 @@
-# nphDesign
+# R Package {nphDesign}
 Steps to install this package on your R console.
 
 install.packages("devtools");            
