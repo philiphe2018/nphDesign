@@ -37,43 +37,38 @@ lambda0 = log(2) / median;}
 \item{lambda1}{Hazard rates for experimental arm for intervals; for exponential(lambda1) distribution,
 lambda1 = log(2) / median; For delayed effect under H1, lambda1 is a vector (below).}
 
-\item{dropOff0}{Drop Off rate per month, eg, 1\\%, for control arm}
+\item{cuts}{Timepoints to form intervals for piecewise exponential distribution. For example,
+experimental arm has hr = 0.6 after delay, then cuts = 6, and
+lamda0 = log(2) / m0 or lambda0 = rep(log(2) / m0, 2),
+lamda1 = c(log(2)/m0, log(2)/m0\emph{hr).
+treatment after 24 mo, so its hazard decreases 20\%. Then,
+lambda0 = c(log(2)/m0, log(2)/m0, log(2)/m0}0.8),
+lambda1 = c(log(2)/m0, log(2)/m0\emph{hr, log(2)/m0}hr), and
+cuts = c(6, 24), which forms 3 intervals (0, 6), (6, 24), (24, infinity)}
 
-\item{dropOff1}{Drop Off rate per month, eg, 1\\%, for experimental arm}
+\item{dropOff0}{Drop Off rate per month, eg, 1\%, for control arm}
+
+\item{dropOff1}{Drop Off rate per month, eg, 1\%, for experimental arm}
 
 \item{targetEvents}{A vector of target events is used to determine DCOs. For example,
 397 target events are used to determine IA DCO; and 496 events are used
 to determine the FA cutoff.}
-
-\item{cuts:}{Timepoints to form intervals for piecewise exponential distribution. For example,
-\describe{
-\item{(1)}{Proportional hazards with hr = 0.65. Then lambda0 = log(2)/m0, lambda1 = log(2)/m0\emph{hr, cuts = NULL. }
-\item{(2)}{Delayed effect at month 6, and control arm has constant hazard (median m0) and
-experimental arm has hr = 0.6 after delay, then cuts = 6, and
-lamda0 = log(2) / m0 or lambda0 = rep(log(2) / m0, 2),
-lamda1 = c(log(2)/m0, log(2)/m0}hr). }
-\item{(3)}{Delayed effect at month 6, and control arm has crossover to subsequent IO
-treatment after 24 mo, so its hazard decreases 20\\%. Then,
-lambda0 = c(log(2)/m0, log(2)/m0, log(2)/m0\emph{0.8),
-lambda1 = c(log(2)/m0, log(2)/m0}hr, log(2)/m0*hr), and
-cuts = c(6, 24), which forms 3 intervals (0, 6), (6, 24), (24, infinity)}
-}}
 }
 \value{
 A dataframe including the following variables:
 \describe{
-\item{sim:}{sequence number of simulated dataset;}
-\item{treatment:}{treatment group with values of "control" and "experimental"}
-\item{enterTime:}{Time of randomization in calendar time}
-\item{calendarTime:}{the time when event/censoring occurred in calendar time}
-\item{survTime:}{survival time for analysis, = calendarTime - enterTime}
-\item{cnsr:}{censor status (0=event; 1=censor) before administrative censoring due to data cut}
-\item{survTimeCutIA:}{survival time for IA after data cut}
-\item{cnsrCutIA:}{censor status after IA data cut;}
-\item{calendarCutIA:}{Data CutOff Time (DCO) for IA;}
-\item{survTimeCutFA:}{survival time for FA after data cut}
-\item{cnsrCutFA:}{censor status after FA data cut;}
-\item{calendarCutFA:}{Data CutOff Time (DCO) for FA;}
+\item{sim}{sequence number of simulated dataset;}
+\item{treatment}{treatment group with values of "control" and "experimental"}
+\item{enterTime}{Time of randomization in calendar time}
+\item{calendarTime}{the time when event/censoring occurred in calendar time}
+\item{survTime}{survival time for analysis, = calendarTime - enterTime}
+\item{cnsr}{censor status (0=event; 1=censor) before administrative censoring due to data cut}
+\item{survTimeCutIA}{survival time for IA after data cut}
+\item{cnsrCutIA}{censor status after IA data cut;}
+\item{calendarCutIA}{Data CutOff Time (DCO) for IA;}
+\item{survTimeCutFA}{survival time for FA after data cut}
+\item{cnsrCutFA}{censor status after FA data cut;}
+\item{calendarCutFA}{Data CutOff Time (DCO) for FA;}
 }
 }
 \description{
@@ -92,7 +87,7 @@ km.IA<-survival::survfit(survival::Surv(survTimeCutIA,1-cnsrCutIA)~treatment,dat
 plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
 km.FA<-survival::survfit(survival::Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data=sim.ph[sim==1])
 plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-\\n
+
 Example (2): Simulate 10 samples with delayed effect at month 6;
  control arm has constant hazard (median 11.7 mo) and experimental arm has hr = 0.65 after delay.
  Total 672 pts, 1:1 randomization, control median OS 11.7 mo. 
@@ -101,15 +96,15 @@ IA and FA are performed at 397 and 496 events respectively.
 N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
 targetEvents = c(397, 496); cuts = 6
 lambda0 = log(2) / m0; lambda1 = c(log(2)/m0, log(2)/m0*hr)
-\\n
+
 sim.delay6 = sim.pwexp(nSim=1, N = N, A = A, w=w, r=r, lambda0=lambda0, lambda1=lambda1, cuts=cuts, dropOff0= dropOff0, dropOff1= dropOff1, targetEvents = targetEvents)
 km.IA<-survival::survfit(survival::Surv(survTimeCutIA,1-cnsrCutIA)~treatment,data=sim.delay6[sim==1])
 plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
 km.FA<-survival::survfit(survival::Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data= sim.delay6[sim==1])
 plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-\\n
+
 Example (3): Simulate 10 samples with delayed effect at month 6 
-Control arm has crossover to subsequent IO after 24 mo, so its hazard decreases 20\\%.
+Control arm has crossover to subsequent IO after 24 mo, so its hazard decreases 20\%.
 control arm has constant hazard (median 11.7 mo) and experimental arm has 
 hr = 1 and 0.65 at intervals (0, 6) and (6, 24) respectively.
 Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 

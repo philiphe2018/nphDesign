@@ -18,14 +18,10 @@ f.dataCut(data, targetEvents = 397)
 \item{targetEvents}{The number of target events for analysis.}
 }
 \value{
-A dataframe including variables
-
-OUTPUT data added two variables:
-\describe{
-\item{-}{calendarCutoff}
-\item{-}{survTimeCut}
-\item{-}{cnsrCut}
-}
+A dataframe including variables:
+calendarCutoff
+survTimeCut
+cnsrCut
 }
 \description{
 Cut data by according to calendar time when number of Target Events is reached.
