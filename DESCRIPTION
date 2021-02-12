@@ -1,13 +1,13 @@
 Package: nphDesign
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Study Design, Monitoring, and Analysis for Survival Endpoints Having Non-proportional Hazards (NPH)
+Version: 0.0.1
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Philip",
+           family = "He",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
+           email = "Philip.He@astrazeneca.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: Study Design, Monitoring, and Analysis for Survival Endpoints Having Non-proportional Hazards (NPH). 
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
