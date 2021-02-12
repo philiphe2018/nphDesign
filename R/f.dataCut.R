@@ -1,6 +1,6 @@
-#' Generate a dataset by administrative data cut at a prespecified number of target events
+#' Generate a dataset by administrative data cut at a pre-specified number of target events
 #'
-#' Cut data by targetEvents according to calendar time
+#' Cut data by according to calendar time when number of Target Events is reached.
 #' 
 #' @param data Dataset must include variables: 
 #'  \describe{

@@ -2,7 +2,7 @@
 #' 
 #' @param N Total number of subjects in a trial
 #' @param A Duration of accrual period in months
-#' @param w Weigth parameter in the non-uniform enrollment pattern
+#' @param w Weigth parameter in the non-uniform enrollment pattern, culmulative proportion of enrollment = (t/A)^w
 #' @param r Randomization ratio r:1
 #' @return n0 and n1 for number of subjects for each month in two groups (n0: control; n1: experimental)
 #' @examples 
