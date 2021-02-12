@@ -10,14 +10,11 @@
 #'    \item{cnsr}{Indicator of event(0) or censor (1)}
 #'    }
 #' @param targetEvents The number of target events for analysis.
-#' @return A dataframe including variables
-#' 
-#' OUTPUT data added two variables:
-#' \describe{
-#'    \item{-}{calendarCutoff}
-#'    \item{-}{survTimeCut}
-#'    \item{-}{cnsrCut}
-#'    }
+#' @return A dataframe including variables:
+#'    calendarCutoff
+#'    survTimeCut
+#'    cnsrCut
+#'    
 #' @export
 f.dataCut = function(data, targetEvents = 397) {
   data0 = data
