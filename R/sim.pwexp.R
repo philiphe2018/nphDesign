@@ -14,19 +14,19 @@
 #'         lambda0 = log(2) / median;
 #' @param  lambda1 Hazard rates for experimental arm for intervals; for exponential(lambda1) distribution,
 #'         lambda1 = log(2) / median; For delayed effect under H1, lambda1 is a vector (below).
-#' @param  cuts: Timepoints to form intervals for piecewise exponential distribution. For example,
-#'   \describe{
-#'   \item{(1)}{Proportional hazards with hr = 0.65. Then lambda0 = log(2)/m0, lambda1 = log(2)/m0*hr, cuts = NULL. }
-#'   \item{(2)}{Delayed effect at month 6, and control arm has constant hazard (median m0) and 
+#' @param  cuts Timepoints to form intervals for piecewise exponential distribution. For example,
+#   \itemize{
+#   \item Proportional hazards with hr = 0.65. Then lambda0 = log(2)/m0, lambda1 = log(2)/m0*hr, cuts = NULL. 
+#   \item Delayed effect at month 6, and control arm has constant hazard (median m0) and 
 #'       experimental arm has hr = 0.6 after delay, then cuts = 6, and 
 #'       lamda0 = log(2) / m0 or lambda0 = rep(log(2) / m0, 2), 
-#'       lamda1 = c(log(2)/m0, log(2)/m0*hr). }
-#'   \item{(3)}{Delayed effect at month 6, and control arm has crossover to subsequent IO 
+#'       lamda1 = c(log(2)/m0, log(2)/m0*hr). 
+#   \item Delayed effect at month 6, and control arm has crossover to subsequent IO 
 #'       treatment after 24 mo, so its hazard decreases 20%. Then, 
 #'       lambda0 = c(log(2)/m0, log(2)/m0, log(2)/m0*0.8), 
 #'       lambda1 = c(log(2)/m0, log(2)/m0*hr, log(2)/m0*hr), and
-#'       cuts = c(6, 24), which forms 3 intervals (0, 6), (6, 24), (24, infinity)}
-#'       }
+#'       cuts = c(6, 24), which forms 3 intervals (0, 6), (6, 24), (24, infinity)
+#       }
 #' @param dropOff0 Drop Off rate per month, eg, 1%, for control arm
 #' @param dropOff1 Drop Off rate per month, eg, 1%, for experimental arm
 #' @param targetEvents A vector of target events is used to determine DCOs. For example, 
@@ -34,18 +34,18 @@
 #'              to determine the FA cutoff.
 #' @return A dataframe including the following variables:
 #' \describe{
-#' \item{sim:}{sequence number of simulated dataset;}
-#' \item{treatment:}{treatment group with values of "control" and "experimental"}
-#' \item{enterTime:}{Time of randomization in calendar time}
-#' \item{calendarTime:}{the time when event/censoring occurred in calendar time}
-#' \item{survTime:}{survival time for analysis, = calendarTime - enterTime}
-#' \item{cnsr:}{censor status (0=event; 1=censor) before administrative censoring due to data cut}
-#' \item{survTimeCutIA:}{survival time for IA after data cut}
-#' \item{cnsrCutIA:}{censor status after IA data cut;}
-#' \item{calendarCutIA:}{Data CutOff Time (DCO) for IA;}
-#' \item{survTimeCutFA:}{survival time for FA after data cut}
-#' \item{cnsrCutFA:}{censor status after FA data cut;}
-#' \item{calendarCutFA:}{Data CutOff Time (DCO) for FA;}
+#' \item{sim}{sequence number of simulated dataset;}
+#' \item{treatment}{treatment group with values of "control" and "experimental"}
+#' \item{enterTime}{Time of randomization in calendar time}
+#' \item{calendarTime}{the time when event/censoring occurred in calendar time}
+#' \item{survTime}{survival time for analysis, = calendarTime - enterTime}
+#' \item{cnsr}{censor status (0=event; 1=censor) before administrative censoring due to data cut}
+#' \item{survTimeCutIA}{survival time for IA after data cut}
+#' \item{cnsrCutIA}{censor status after IA data cut;}
+#' \item{calendarCutIA}{Data CutOff Time (DCO) for IA;}
+#' \item{survTimeCutFA}{survival time for FA after data cut}
+#' \item{cnsrCutFA}{censor status after FA data cut;}
+#' \item{calendarCutFA}{Data CutOff Time (DCO) for FA;}
 #' }
 #' @examples
 #' Example (1): Simulate 10 samples from proportional hazards scenario. 
