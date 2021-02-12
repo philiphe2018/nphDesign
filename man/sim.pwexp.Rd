@@ -47,12 +47,11 @@ to determine the FA cutoff.}
 
 \item{cuts:}{Timepoints to form intervals for piecewise exponential distribution. For example,
 \describe{
-\item{(1)}{Proportional hazards with hr = 0.65. Then lambda0 = log(2)/m0,
-lambda1 = log(2)/m0\emph{hr, cuts = NULL.}
+\item{(1)}{Proportional hazards with hr = 0.65. Then lambda0 = log(2)/m0, lambda1 = log(2)/m0\emph{hr, cuts = NULL. }
 \item{(2)}{Delayed effect at month 6, and control arm has constant hazard (median m0) and
 experimental arm has hr = 0.6 after delay, then cuts = 6, and
 lamda0 = log(2) / m0 or lambda0 = rep(log(2) / m0, 2),
-lamda1 = c(log(2)/m0, log(2)/m0}hr).}
+lamda1 = c(log(2)/m0, log(2)/m0}hr). }
 \item{(3)}{Delayed effect at month 6, and control arm has crossover to subsequent IO
 treatment after 24 mo, so its hazard decreases 20\%. Then,
 lambda0 = c(log(2)/m0, log(2)/m0, log(2)/m0\emph{0.8),
@@ -126,6 +125,5 @@ km.IA<-survival::survfit(survival::Surv(survTimeCutIA,1-cnsrCutIA)~treatment,dat
 plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
 km.FA<-survival::survfit(survival::Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data= sim.delay6crs[sim==1])
 plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-
 }
 }
