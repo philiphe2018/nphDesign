@@ -21,6 +21,7 @@ library(nphDesign) #call nphDesign package
 
 (7); 
 ?wlr  #Call the R documentation of function wlr()
+
 help(package="nphDesign") #Overview of the package functions
 
 
