@@ -16,11 +16,12 @@ remove.packages("nphDesign") #remove previous unsuccessfully installed package o
 (5); 
 devtools::install_github("philiphe2018/nphDesign") #install the package from github repository.
 
-(6); 
+(6) Test installation; 
 library(nphDesign) #call nphDesign package
 
 (7); 
-?sim.pwexp  #help function to call the R documentation of function sim.pwexp(). 
+?wlr  #Call the R documentation of function wlr()
+help(package="nphDesign") #Overview of the package functions
 
 
 If it doesn't work somehow, close R, then try again. 
