@@ -32,47 +32,46 @@
 #' @param targetEvents A vector of target events is used to determine DCOs. For example, 
 #'              397 target events are used to determine IA DCO; and 496 events are used 
 #'              to determine the FA cutoff.
-#' @return A dataframe including the following variables:
+#' @return An object with a dataframe for each analysis including the following variables:
 #' \describe{
 #' \item{sim}{sequence number of simulated dataset;}
 #' \item{treatment}{treatment group with values of "control" and "experimental"}
 #' \item{enterTime}{Time of randomization in calendar time}
 #' \item{calendarTime}{the time when event/censoring occurred in calendar time}
-#' \item{survTime}{survival time for analysis, = calendarTime - enterTime}
+#' \item{survTime}{Survival time for analysis, = calendarTime - enterTime}
 #' \item{cnsr}{censor status (0=event; 1=censor) before administrative censoring due to data cut}
-#' \item{survTimeCutIA}{survival time for IA after data cut}
-#' \item{cnsrCutIA}{censor status after IA data cut;}
-#' \item{calendarCutIA}{Data CutOff Time (DCO) for IA;}
-#' \item{survTimeCutFA}{survival time for FA after data cut}
-#' \item{cnsrCutFA}{censor status after FA data cut;}
-#' \item{calendarCutFA}{Data CutOff Time (DCO) for FA;}
+#' \item{calendarCutOff}{Data CutOff Time (DCO);}
+#' \item{survTimeCut}{Survival time after cut}
+#' \item{cnsrCut}{Censor status after cut}
 #' }
 #' @examples
 #' Example (1): Simulate 10 samples from proportional hazards scenario. 
 #' Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 
 #' HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
 #' IA and FA are performed at 397 and 496 events respectively.
+#' 
 #' N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
 #' targetEvents = c(397, 496); lambda0 = log(2) / m0; lambda1 = log(2)/m0*hr; cuts = NULL;
 #' sim.ph = sim.pwexp(nSim=10, N = N, A = A, w=w, r=r, lambda0=lambda0, lambda1= lambda1, cuts=cuts, dropOff0= dropOff0, dropOff1= dropOff1, targetEvents = targetEvents)
-#' km.IA<-survival::survfit(survival::Surv(survTimeCutIA,1-cnsrCutIA)~treatment,data=sim.ph[sim==1])
+#' km.IA<-survival::survfit(survival::Surv(survTimeCut,1-cnsrCut)~treatment,data=sim.ph[[1]][sim==1,])
 #' plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-#' km.FA<-survival::survfit(survival::Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data=sim.ph[sim==1])
+#' km.FA<-survival::survfit(survival::Surv(survTimeCut,1-cnsrCut)~treatment,data=sim.ph[[2]][sim==1,])
 #' plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
 #' 
 #' Example (2): Simulate 10 samples with delayed effect at month 6;
 #'  control arm has constant hazard (median 11.7 mo) and experimental arm has hr = 0.65 after delay.
-#'  Total 672 pts, 1:1 randomization, control median OS 11.7 mo. 
+#' Total 672 pts, 1:1 randomization, control median OS 11.7 mo. 
 #' HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
 #' IA and FA are performed at 397 and 496 events respectively.
+#' 
 #' N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
 #' targetEvents = c(397, 496); cuts = 6
 #' lambda0 = log(2) / m0; lambda1 = c(log(2)/m0, log(2)/m0*hr)
 #' 
 #' sim.delay6 = sim.pwexp(nSim=1, N = N, A = A, w=w, r=r, lambda0=lambda0, lambda1=lambda1, cuts=cuts, dropOff0= dropOff0, dropOff1= dropOff1, targetEvents = targetEvents)
-#' km.IA<-survival::survfit(survival::Surv(survTimeCutIA,1-cnsrCutIA)~treatment,data=sim.delay6[sim==1])
+#' km.IA<-survival::survfit(survival::Surv(survTimeCut,1-cnsrCut)~treatment,data=sim.delay6[[1]][sim==1,])
 #' plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-#' km.FA<-survival::survfit(survival::Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data= sim.delay6[sim==1])
+#' km.FA<-survival::survfit(survival::Surv(survTimeCut,1-cnsrCut)~treatment,data= sim.delay6[[2]][sim==1,])
 #' plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
 #' 
 #' Example (3): Simulate 10 samples with delayed effect at month 6 
@@ -82,14 +81,15 @@
 #' Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 
 #' HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
 #' IA and FA are performed at 397 and 496 events respectively.
+#' 
 #' N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
 #' targetEvents = c(397, 496); cuts = c(6, 24); crossTime = 24; crossEffect = 0.8
 #' lambda0 = log(2)/m0*c(1, 1, crossEffect); lambda1 = log(2)/m0*c(1, hr, hr)
 #' 
 #' sim.delay6crs=sim.pwexp(nSim=10,N=N,A=A,w=w,r=r,lambda0=lambda0, lambda1=lambda1,cuts=cuts,dropOff0=dropOff0,dropOff1=dropOff1, targetEvents=targetEvents)
-#' km.IA<-survival::survfit(survival::Surv(survTimeCutIA,1-cnsrCutIA)~treatment,data=sim.delay6crs[sim==1])
+#' km.IA<-survival::survfit(survival::Surv(survTimeCut,1-cnsrCut)~treatment,data=sim.delay6crs[[1]][sim==1,])
 #' plot(km.IA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
-#' km.FA<-survival::survfit(survival::Surv(survTimeCutFA,1-cnsrCutFA)~treatment,data= sim.delay6crs[sim==1])
+#' km.FA<-survival::survfit(survival::Surv(survTimeCut,1-cnsrCut)~treatment,data= sim.delay6crs[[2]][sim==1,])
 #' plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
 #' 
 #' @export 
@@ -105,23 +105,24 @@ sim.pwexp = function(nSim=100, N = 672, A = 21, w=1.5, r=1, lambda0=log(2)/11.7,
              intervals=cuts, gamma=gamma, R=rep(1, A),eta=eta0, etaE=eta1,fixEnrollTime = FALSE)
   dat = o$simd
   data.out = NULL
+  L = length(targetEvents) #number of analyses
+  
   for (j in 1:nSim) {
     
     dataj = dat[dat$sim == j,]
     
     #rename variables
     dataj <- dplyr::rename(dataj, enterTime = enterT, calendarTime = ct, survTime= survival)
+
+    #cut data according to the specified target events    
+    dataj.cut <- lapply(1:L, function(k) {
+      f.dataCut(data=dataj, targetEvents[k])
+    })
     
-    dataj.IA = f.dataCut(data=dataj, targetEvents[1])
-    dataj.FA = f.dataCut(data=dataj, targetEvents[2])
-    dataj$survTimeCutIA = dataj.IA$survTimeCut
-    dataj$cnsrCutIA = dataj.IA$cnsrCut
-    dataj$calendarCutIA = dataj.IA$calendarCutoff
+    data.out=lapply(1:L, function(k) {
+      rbind(data.out[[k]], dataj.cut[[k]])
+    })
     
-    dataj$survTimeCutFA = dataj.FA$survTimeCut
-    dataj$cnsrCutFA = dataj.FA$cnsrCut
-    dataj$calendarCutFA = dataj.FA$calendarCutoff
-    data.out = rbind(data.out, dataj)
   }
   return(data.out)
 }
