@@ -20,6 +20,7 @@
 #'       s.tau = 0 reduces to regular Fleming-Harrington test(rho, gamma)
 #' @param  f.ws  Self-defined weight function of survival rate. 
 #'         For example, f.ws = function(s){1/max(s, 0.25)}
+#'         When f.ws is specified, the weight function takes it as priority.
 #' @param  strata1 Stratification variable 1
 #' @param  strata2 Stratification variable 2
 #' @param  strata3 Stratification variable 3
