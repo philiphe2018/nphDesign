@@ -37,7 +37,8 @@ tau = Inf reduces to regular Fleming-Harrington test(rho, gamma)}
 s.tau = 0 reduces to regular Fleming-Harrington test(rho, gamma)}
 
 \item{f.ws}{Self-defined weight function of survival rate.
-For example, f.ws = function(s){1/max(s, 0.25)}}
+For example, f.ws = function(s){1/max(s, 0.25)}
+When f.ws is specified, the weight function takes it as priority.}
 
 \item{side}{Type of test. one.sided or two.sided. default = two.sided}
 }

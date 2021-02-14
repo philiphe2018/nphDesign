@@ -2,7 +2,7 @@
 % Please edit documentation in R/sim.pwexp.R
 \name{sim.pwexp}
 \alias{sim.pwexp}
-\title{Simulate data following piecewise exponential distribution with non-uniform accrual pattern and lost to follow-up}
+\title{Simulate data following piece-wise exponential distribution with non-uniform accrual pattern and lost to follow-up}
 \usage{
 sim.pwexp(
   nSim = 100,
@@ -69,8 +69,17 @@ An object with a dataframe for each analysis including the following variables:
 }
 }
 \description{
-Randomization time is simulated according to the specified non-uniform accrual pattern;
-of weight w in A months for N total patients for r:1 randomization ratio
+Simulate Randomized two-arm trial data with the following characteristics:
+(1) randomization time (entry time) is generated according to the specified non-uniform accrual pattern,
+i.e. the cumulative recruitment at calendar time t is (t/A)^w with weight w and enrollment complete in A months.
+w = 1 means uniform enrollment, which is usually not realistic due to graduate sites activation process.
+(2) Survival time follows piece-wise exponential distribution for each arm.
+(3) N total patients with r:1 randomization ratio
+(4) Random drop off can be incorporated into the censoring process.
+(5) Data cutoff dates are determined by specified vector of target events for all analyses.
+(6) A dataset is generated for each analysis according to the specified number of target events.
+Multiple analyses can be specified according to the vector of targetEvents, eg, targetEvents = c(100, 200, 300)
+defines 3 analyses at 100, 200, and 300 events separately.
 }
 \examples{
 Example (1): Simulate 10 samples from proportional hazards scenario. 
