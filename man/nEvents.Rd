@@ -79,10 +79,11 @@ experimental arm. The delayed period is assumed 6 months, and after delay the
 hazard ratio is assumed 0.65.
 
 HR = 0.65; delay = 6; lambda0 = log(2) / 12
-lambda1 = function(t){lambda0*as.numeric(t < delay)+HR*lambda0*as.numeric(t >= delay)}
+hazard function for experimental arm
+h1 = function(t){lambda0*as.numeric(t < delay)+HR*lambda0*as.numeric(t >= delay)}
 c = exp(-delay*lambda0*(1-HR)); 
 S1 = function(t){exp(-lambda0*t)*as.numeric(t<delay) + c*exp(-HR*lambda0*t)*as.numeric(t>=delay)}
-f1 = function(t){lambda1(t) * S1(t)}
+f1 = function(t){h1(t) * S1(t)}
 f0 = function(t){dexp(t, lambda0)}
 F.entry = function(t){(t/18)^1.5*as.numeric(t <= 18) + as.numeric(t > 18)}
 
