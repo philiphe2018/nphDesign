@@ -1,28 +1,25 @@
 # R Package {nphDesign}
-Steps to install this package on your R console. The required R version is 4.0.3 or later. 
+#Steps to install this package on your R console. The required R version is 4.0.3 or later. 
 
-(1);   
-install.packages("devtools") #install devtools package if not installed yet.
+#(1) install devtools package if not installed yet;
+install.packages("devtools")
 
-(2); 
-install.packages("roxygen2") #install roxygen2 package if not installed yet.
+#(2) install roxygen2 package if not installed yet;
+install.packages("roxygen2") 
 
-(3); 
-rm(list = ls()) #clean enviornment
+#(3) #clean enviornment;
+rm(list = ls()) 
 
-(4); 
-remove.packages("nphDesign") #remove previous unsuccessfully installed package or earlier version of the package.
+#(4) remove previous unsuccessfully installed package or earlier version of the package.; 
+remove.packages("nphDesign") 
 
-(5); 
-devtools::install_github("philiphe2018/nphDesign") #install the package from github repository.
+#(5)install the package from github repository.; 
+devtools::install_github("philiphe2018/nphDesign") 
 
-(6) Test installation; 
-library(nphDesign) #call nphDesign package
+#(6) Test installation; 
+library(nphDesign) 
 
-(7); 
-?wlr  #Call the R documentation of function wlr()
+#(7) Overview of the package functions;
+help(package="nphDesign") 
 
-help(package="nphDesign") #Overview of the package functions
-
-
-If it doesn't work somehow, close R, then try again. 
+#If it doesn't work somehow, close R, then try again. 
