@@ -2,6 +2,7 @@
 
 export(f.dataCut)
 export(f.nEachMonth)
+export(nEvents)
 export(sim.pwexp)
 export(wlr)
 export(wlr.cov)
