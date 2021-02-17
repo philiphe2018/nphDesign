@@ -171,7 +171,7 @@ rho1 = 0, gamma1 = 0, tau1 = NULL, s.tau1 = 0, f.ws1 = NULL,
 rho2 = NULL, gamma2 = NULL, tau2 = NULL, s.tau2 = 0, f.ws2 = function(s){(1-s)},
 F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
 
-#Draw plot of information for log-rank test and FH01 for T in (0, 48)
+#(e) Draw plot of information for log-rank test and FH01 for T in (0, 48)
 maxT = 48
 info.lr.H0 = info.lr.H1 =info.fh.H0 =info.fh.H1 =info.sfh.H0 =info.sfh.H1 = rep(NA, maxT)
 for (i in 1:maxT) {
@@ -203,6 +203,133 @@ lines(1:maxT, info.fh.H1/info.fh.H1[maxT], lty = 2, col=2)
 lines(1:maxT, info.sfh.H0/info.sfh.H0[maxT], lty = 1, col=3)
 lines(1:maxT, info.sfh.H1/info.sfh.H1[maxT], lty = 2, col=3) 
 legend(0, 1, c("Log-rank(H0)", "Log-rank(H1)", "FH01(H0)", "FH01(H1)", "sFH01(H0)", "sFH01(H1)"), col=c(1,1,2,2,3,3), lty=c(1,2,1,2,1,2), bty="n", cex=0.8)
+
+#(f) Draw plot of correlation between IA and FA over the timing of IA
+maxT = 48
+corr.lr.H0 = corr.lr.H1 =corr.fh.H0 =corr.fh.H1 =corr.sfh.H0 =corr.sfh.H1 = rep(NA, maxT)
+for (i in 1:maxT) {
+  lr = wlr.info(T = c(i, maxT), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 0, tau1 = NULL, s.tau1 = 0, f.ws1 = NULL,
+  rho2 = NULL, gamma2 = NULL, tau2 = NULL, s.tau2 = 0, f.ws2 = NULL,
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.lr.H0[i] = lr$corr.H0; corr.lr.H1[i] = lr$corr.H1;
+  
+  fh = wlr.info(T = c(i, 48), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 1, tau1 = NULL, s.tau1 = 0, f.ws1 = NULL,
+  rho2 = NULL, gamma2 = NULL, tau2 = NULL, s.tau2 = 0, f.ws2 = NULL,
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.fh.H0[i] = fh$corr.H0; corr.fh.H1[i] = fh$corr.H1;
+  
+  sfh = wlr.info(T = c(i, 48), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 1, tau1 = NULL, s.tau1 = 0.5, f.ws1 = NULL,
+  rho2 = NULL, gamma2 = NULL, tau2 = NULL, s.tau2 = 0, f.ws2 = NULL,
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.sfh.H0[i] = sfh$corr.H0; corr.sfh.H1[i] = sfh$corr.H1;
+}
+
+plot(1:maxT, corr.lr.H0, type="n", ylim=c(0, 1), 
+xlab="Months", ylab = "Correlation btw IA and FA")   
+lines(1:maxT, corr.lr.H0, lty = 1, col=1)
+lines(1:maxT, corr.lr.H1, lty = 2, col=1)
+lines(1:maxT, corr.fh.H0, lty = 1, col=2)
+lines(1:maxT, corr.fh.H1, lty = 2, col=2)
+lines(1:maxT, corr.sfh.H0, lty = 1, col=3)
+lines(1:maxT, corr.sfh.H1, lty = 2, col=3)
+legend(0, 1, c("Log-rank(H0)", "Log-rank(H1)", "FH01(H0)", "FH01(H1)", "sFH01(H0)", "sFH01(H1)"), col=c(1,1,2,2,3,3), lty=c(1,2,1,2,1,2), bty="n", cex=0.8)
+
+#(g) Draw a plot to show the theoretical calculation between correlation and sqrt(information fraction)
+#Before enrollment complete, the correlation > sqrt(Information Fraction).
+#After enrollment complete, they are equivalent.
+plot(1:maxT, corr.lr.H0, type="n", ylim=c(0, 1), 
+xlab="Months", ylab = "Correlation btw IA and FA")   
+lines(1:maxT, corr.lr.H0, lty = 1, col=1)
+lines(1:maxT, sqrt(info.lr.H0/info.lr.H0[maxT]), lty = 2, col=1)
+lines(1:maxT, corr.fh.H0, lty = 1, col=2)
+lines(1:maxT, sqrt(info.fh.H0/info.fh.H0[maxT]), lty = 2, col=2)
+lines(1:maxT, corr.sfh.H0, lty = 1, col=3)
+lines(1:maxT, sqrt(info.sfh.H0/info.sfh.H0[maxT]), lty = 2, col=3)
+legend(0, 1, c("Log-rank(H0): corr", "Log-rank(H0): sqrt(IF)", "FH01(H0): corr", "FH01(H0): sqrt(IF)", "sFH01(H0): corr", "sFH01(H0): sqrt(IF)"), col=c(1,1,2,2,3,3), lty=c(1,2,1,2,1,2), bty="n", cex=0.8)
+
+#(h) Draw plot of correlation between IA and FA for different choices of tests at IA and FA
+maxT = 48
+corr.lr.lr.H0 =corr.lr.fh.H0 = corr.lr.sfh.H0 =  rep(NA, maxT)
+corr.fh.lr.H0 =corr.fh.fh.H0 =corr.fh.sfh.H0 = rep(NA, maxT)
+corr.sfh.lr.H0 =corr.sfh.fh.H0 =corr.sfh.sfh.H0 = rep(NA, maxT)
+for (i in 1:maxT) {
+  lr.lr = wlr.info(T = c(i, maxT), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 0, tau1 = NULL, s.tau1 = 0, f.ws1 = function(t){1},
+  rho2 = NULL, gamma2 = NULL, tau2 = NULL, s.tau2 = 0, f.ws2 = function(t){1},
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.lr.lr.H0[i] = lr.lr$corr.H0;
+  
+  lr.fh = wlr.info(T = c(i, 48), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 0, tau1 = NULL, s.tau1 = 0, f.ws1 = function(t){1},
+  rho2 = 0, gamma2 = 1, tau2 = NULL, s.tau2 = 0, f.ws2 = NULL,
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.lr.fh.H0[i] = lr.fh$corr.H0; 
+  
+  lr.sfh = wlr.info(T = c(i, 48), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 0, tau1 = NULL, s.tau1 = 0, f.ws1 = function(t){1},
+  rho2 = 0, gamma2 = 1, tau2 = NULL, s.tau2 = 0.5, f.ws2 = NULL,
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.lr.sfh.H0[i] = lr.sfh$corr.H0; 
+     
+  fh.lr = wlr.info(T = c(i, maxT), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 1, tau1 = NULL, s.tau1 = 0, f.ws1 = NULL,
+  rho2 = NULL, gamma2 = NULL, tau2 = NULL, s.tau2 = 0, f.ws2 = function(t){1},
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.fh.lr.H0[i] = fh.lr$corr.H0;
+  
+  fh.fh = wlr.info(T = c(i, 48), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 1, tau1 = NULL, s.tau1 = 0, f.ws1 = NULL,
+  rho2 = 0, gamma2 = 1, tau2 = NULL, s.tau2 = 0, f.ws2 = NULL,
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.fh.fh.H0[i] = fh.fh$corr.H0; 
+  
+  fh.sfh = wlr.info(T = c(i, 48), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 1, tau1 = NULL, s.tau1 = 0, f.ws1 = NULL,
+  rho2 = 0, gamma2 = 1, tau2 = NULL, s.tau2 = 0.5, f.ws2 = NULL,
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.fh.sfh.H0[i] = fh.sfh$corr.H0; 
+     
+  sfh.lr = wlr.info(T = c(i, maxT), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 1, tau1 = NULL, s.tau1 = 0.5, f.ws1 = NULL,
+  rho2 = NULL, gamma2 = NULL, tau2 = NULL, s.tau2 = 0, f.ws2 = function(t){1},
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.sfh.lr.H0[i] = sfh.lr$corr.H0;
+  
+  sfh.fh = wlr.info(T = c(i, 48), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 1, tau1 = NULL, s.tau1 = 0.5, f.ws1 = NULL,
+  rho2 = 0, gamma2 = 1, tau2 = NULL, s.tau2 = 0, f.ws2 = NULL,
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.sfh.fh.H0[i] = sfh.fh$corr.H0; 
+  
+  sfh.sfh = wlr.info(T = c(i, 48), r = 1, h0 = h0, S0= S0, h1 = h1, S1=S1, 
+  rho1 = 0, gamma1 = 1, tau1 = NULL, s.tau1 = 0.5, f.ws1 = NULL,
+  rho2 = 0, gamma2 = 1, tau2 = NULL, s.tau2 = 0.5, f.ws2 = NULL,
+  F.entry = F.entry, G.ltfu = function(t){0}, n = 450)
+  corr.sfh.sfh.H0[i] = sfh.sfh$corr.H0;     
+}
+
+plot(1:maxT, corr.lr.H0, type="n", ylim=c(0, 1), 
+xlab="Months", ylab = "Correlation btw IA and FA")   
+lines(1:maxT, corr.lr.lr.H0, lty = 1, col=1)
+lines(1:maxT, corr.lr.fh.H0, lty = 2, col=1)
+lines(1:maxT, corr.lr.sfh.H0, lty = 3, col=1)
+
+lines(1:maxT, corr.fh.lr.H0, lty = 1, col=2)
+lines(1:maxT, corr.fh.fh.H0, lty = 2, col=2)
+lines(1:maxT, corr.fh.sfh.H0, lty = 3, col=2)
+
+lines(1:maxT, corr.sfh.lr.H0, lty = 1, col=3)
+lines(1:maxT, corr.sfh.fh.H0, lty = 2, col=3)
+lines(1:maxT, corr.sfh.sfh.H0, lty = 3, col=3)
+legend(0, 1, c("LR-LR(H0)", "LR-FH(H0)", "LR-sFH(H0)", 
+"FH-LR(H0)", "FH-FH(H0)", "FH-sFH(H0)",
+"sFH-LR(H0)", "sFH-FH(H0)", "sFH-sFH(H0)"), col=c(1,1,1,2,2,2,3,3,3), 
+lty=c(1:3,1:3,1:3), bty="n", cex=0.8)
+
+
 
 #Example (2) Same trial set up as example (1) but assuming delayed effect for 
 experimental arm. The delayed period is assumed 6 months, and after delay the
