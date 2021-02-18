@@ -71,6 +71,8 @@
 #' \item{wt}{Weight function(s) used in the calculation}
 #' }
 #' @examples
+#' #Example (1) Stratified max-combo test including 3 weighted log-rank test statistics:
+#' #log-rank, FH(0, 0.5), and sFH(0, 1, tau=0.5).
 #' time=rexp(100); event=sample(c(0,1), 100, replace = TRUE); 
 #' group=c(rep(0, 50), rep(1, 50)); 
 #' strata1=sample(c(1,2), 100, replace = TRUE)
@@ -87,17 +89,40 @@
 #' wlr.maxcombo(time=time, event=event, group=group, strata1=strata1, 
 #' strata2=strata2, strata3=strata3, rho=rho, gamma=gamma, 
 #' tau = tau, s.tau=s.tau, f.ws=f.ws, side = side)
+#'
+#' #Equivalent to 
+#' wlr.maxcombo(time=time, event=event, group=group, strata1=strata1, 
+#' strata2=strata2, strata3=strata3, rho=rho, gamma=gamma, 
+#' tau = tau, s.tau=s.tau, f.ws=NULL, side = side)
 #' 
-#' wlr(time=rexp(100), event=sample(c(0,1), 100, replace = TRUE), group=c(rep(0, 50), rep(1, 50)), rho=0, gamma=1, tau = NULL, s.tau=0, strata1=sample(c(1,2), 100, replace = TRUE), strata2=sample(c(1,2), 100, replace = TRUE))
-#' wlr(time=rexp(100), event=sample(c(0,1), 100, replace = TRUE), group=c(rep(0, 50), rep(1, 50)), rho=0, gamma=1, tau = NULL, s.tau=0, strata1=sample(c(1,2), 100, replace = TRUE), strata2=sample(c(1,2), 100, replace = TRUE), strata3=sample(c(1,2), 100, replace = TRUE))
-#' wlr(time=rexp(100), event=sample(c(0,1), 100, replace = TRUE), group=c(rep(0, 50), rep(1, 50)), rho=0, gamma=1, tau = NULL, s.tau=0, strata1=sample(c(1,2), 100, replace = TRUE), strata2=sample(c(1,2), 100, replace = TRUE), strata3=sample(c(3,4), 100, replace = TRUE), f.ws=function(s){1/max(s^2, 0.25)})
-#' wlr(time=c(5,7,10,12,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(0,1,0,1,0,1,0,1), rho=0, gamma=1, tau = 3, s.tau=NULL)
-#' wlr(time=c(5,7,10,12,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(0,1,0,1,0,1,0,1), rho=0, gamma=1, tau = 20, s.tau=NULL)
-#' wlr(time=c(5,7,10,12,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(0,1,0,1,0,1,0,1), rho=0, gamma=1, tau = Inf, s.tau=NULL)
-#' wlr(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1,0,1), rho=0, gamma=1, tau = 10, s.tau=NULL)
-#' wlr(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1,0,1), rho=0, gamma=1, tau = 10, s.tau=0.5, side="one.sided")
-#' wlr(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1,0,1), rho=0, gamma=0, tau = 10, s.tau=0.5, side="one.sided")
-#' wlr(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1,0,1), rho=0, gamma=0, tau = 10, s.tau=0, side="one.sided")
+#' #Example (2) If there is only 1 weighted log-rank test, max-combo reduces to weighted log-rank test
+#' #FH01 test
+#' wlr.maxcombo(time=time, event=event, group=group, strata1=strata1, 
+#' strata2=strata2, strata3=strata3, rho=0, gamma=1, 
+#' tau = NULL, s.tau=0, f.ws=NULL, side = side)
+#' 
+#' #equivalent to
+#' wlr(time=time, event=event, group=group, strata1=strata1, 
+#' strata2=strata2, strata3=strata3, rho=0, gamma=1, 
+#' tau = NULL, s.tau=0, f.ws=NULL, side = side)
+#' 
+#' #Example (3) maxcombo of (logrank, FH01, FH11)
+#' wlr.maxcombo(time=time, event=event, group=group, strata1=strata1, 
+#' strata2=strata2, strata3=strata3, rho=c(0,0,1), gamma=c(0,1,1), 
+#' tau = NULL, s.tau=c(0,0,0), f.ws=NULL, side = side)
+#' 
+#' #Example (4) maxcombo of (logrank, FH01)
+#' wlr.maxcombo(time=time, event=event, group=group, strata1=strata1, 
+#' strata2=strata2, strata3=strata3, rho=c(0,0), gamma=c(0,1), 
+#' tau = NULL, s.tau=c(0,0), f.ws=NULL, side = side)
+#' 
+#' #Example (5) maxcombo of (logrank, modestly logrank)
+#' wlr.maxcombo(time=time, event=event, group=group, strata1=strata1, 
+#' strata2=strata2, strata3=strata3, rho=NULL, gamma=NULL, 
+#' tau = NULL, s.tau=NULL, f.ws=list(
+#' lr = function(s){1},
+#' mlr = function(s){1/apply(cbind(s, 0.5),MARGIN=1,FUN=max)}), side = side)
+#' 
 #' @export
 wlr.maxcombo = function(time=c(5,7,10,12,12,15,20,20), event=c(1,0,0,1,1,0,1,1),
     group=c(0,1,0,1,0,1,0,1), strata1=NULL, strata2=NULL, strata3=NULL, 
@@ -120,37 +145,40 @@ wlr.maxcombo = function(time=c(5,7,10,12,12,15,20,20), event=c(1,0,0,1,1,0,1,1),
     z[k] = as.numeric(wlr.k$test.results$z)
   }
   
-  #correlation matrix of (z1, ..., zK)
-  corr = matrix(1, nrow=K, ncol=K)
-  for (i in 1:(K-1)){
-    for (j in (i+1):K){
-      corr[i, j] = wlr.cov(time=time, event=event, group=group, strata1=strata1,
+  if(K > 1){
+    #correlation matrix of (z1, ..., zK)
+    corr = matrix(1, nrow=K, ncol=K)
+    for (i in 1:(K-1)){
+      for (j in (i+1):K){
+        corr[i, j] = wlr.cov(time=time, event=event, group=group, strata1=strata1,
                   strata2=strata2, strata3=strata3, 
-              rho1=rho[i], gamma1=gamma[i], tau1 = tau1[i], s.tau1=s.tau[i],
-              rho2=rho[j], gamma2=gamma[j], tau2 = tau[j],  s.tau2=s.tau[j],
+              rho1=rho[i], gamma1=gamma[i], tau1 = tau[i], s.tau1=s.tau[i],
+              rho2=rho[j], gamma2=gamma[j], tau2 = tau[j], s.tau2=s.tau[j],
               f.ws1=f.ws[[i]], f.ws2=f.ws[[j]])$corr
-      corr[j, i] = corr[i, j]
+        corr[j, i] = corr[i, j]
+      }
     }
-  }
-  if (side[1] == "one.sided"){
-    test.side = 1
-    p = 1 - mvtnorm::pmvnorm(lower = -Inf, upper = rep(z.max, K), corr = corr, abseps = 1e-6)
-    z.max = max(z)
-    test.results =  data.frame(cbind(z, z.max, p, test.side))
+
+    if (side[1] == "one.sided"){
+      test.side = 1
+      z.max = max(z)
+      p = 1 - mvtnorm::pmvnorm(lower = -Inf, upper = rep(z.max, K), corr = corr, abseps = 1e-6)
+      test.results =  data.frame(cbind(z, z.max, p, test.side))
     
-  } else {
-    test.side = 2
-    abs.z.max = max(abs(z))    
-    p = 2*(1 - mvtnorm::pmvnorm(lower = -Inf, upper = rep(abs.z.max, K), corr = corr))
-    test.results =  data.frame(cbind(z, abs.z.max, p, test.side))
-  }
-  o=list()
-  o$data = data.frame(cbind(time, event, group, strata1, strata2, strata3))
-  o$corr = corr
-  o$test.results = test.results
-  if(!is.null(f.ws)){wt = f.ws} else{
-    wt = data.frame(cbind(rho, gamma, tau, s.tau))
-  }
-  o$wt = wt
+    } else {
+      test.side = 2
+      abs.z.max = max(abs(z))    
+      p = 2*(1 - mvtnorm::pmvnorm(lower = -Inf, upper = rep(abs.z.max, K), corr = corr))
+      test.results =  data.frame(cbind(z, abs.z.max, p, test.side))
+    }
+    o=list()
+    o$data = data.frame(cbind(time, event, group, strata1, strata2, strata3))
+    o$corr = corr
+    o$test.results = test.results
+    if(!is.null(f.ws)){wt = f.ws} else{
+      wt = data.frame(cbind(rho, gamma, tau, s.tau))
+    }
+    o$wt = wt
+  } else{o = wlr.k}
   return(o)     
 }
