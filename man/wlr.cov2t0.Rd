@@ -132,9 +132,10 @@ test with parameters specified for rho and gamma. The first weighted log-rank st
 weight function w1 at one analysis and the second weighted log-rank test at a later analysis has weight function w2.
 }
 \examples{
-Covariance of Log-rank test and Fleming-Harrington (0, 1) with Log-rank at interim analysis and Fleming-Harrington (0, 1) at final analysis.
+#Covariance of Log-rank test and Fleming-Harrington (0, 1) with Log-rank at interim analysis and Fleming-Harrington (0, 1) at final analysis.
 data = sim.pwexp(nSim = 1,N = 672,A = 21,w = 1.5,r = 1,lambda0 = log(2)/11.7,lambda1 = log(2)/11.7 * 0.745,targetEvents = c(397, 496))
 data.IA = data[[1]]; data.FA = data[[2]]
 group = as.numeric(data.IA$treatment == "experimental")
 wlr.cov2t0(time1=data.IA$survTimeCut, event1=1-data.IA$cnsrCut, time2=data.FA$survTimeCut, event2=1-data.FA$cnsrCut, group=group, rho1=0, gamma1=0, tau1 = NULL, s.tau1=0,rho2=0, gamma2=1, tau2 = NULL, s.tau2=0,f.ws1=NULL, f.ws2=NULL)
+
 }

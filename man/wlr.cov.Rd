@@ -112,4 +112,5 @@ test with parameters specified for rho and gamma.
 \examples{
 wlr.cov(time=rexp(100), event=sample(c(0,1), 100, replace = TRUE), group=c(rep(0, 50), rep(1, 50)), rho1=0, gamma1=0, tau1 = NULL, s.tau1=0.5,rho2=0, gamma2=1, tau2 = NULL, s.tau2=0.5,f.ws1=NULL, f.ws2=NULL)
 wlr.cov(time=rexp(100), event=sample(c(0,1), 100, replace = TRUE), group=c(rep(0, 50), rep(1, 50)), rho1=0, gamma1=0, tau1 = NULL, s.tau1=0.5,rho2=0, gamma2=1, tau2 = NULL, s.tau2=0.5,f.ws1=NULL, f.ws2=NULL,strata1=sample(c(1,2), 100, replace = TRUE),strata2=sample(c(1,2), 100, replace = TRUE),strata3=sample(c(1,2), 100, replace = TRUE))
+
 }

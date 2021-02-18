@@ -7,10 +7,12 @@
 nEvents(
   T = 24,
   r = 1,
-  f0 = function(t) {     dexp(t, log(2)/12) },
-  f1 = function(t) {     dexp(t, log(2)/12 * 0.7) },
+  h0 = function(t) {     log(2)/12 },
+  S0 = function(t) {     exp(-log(2)/12 * t) },
+  h1 = function(t) {     log(2)/12 * 0.7 },
+  S1 = function(t) {     exp(-log(2)/12 * 0.7 * t) },
   F.entry = function(t) {     (t/18) * as.numeric(t <= 18) + as.numeric(t > 18) },
-  G.ltfu = 0,
+  G.ltfu = function(t) {     0 },
   n = 450
 )
 }
@@ -19,9 +21,17 @@ nEvents(
 
 \item{r}{Randomization ratio of experimental arm : control arm as r:1. When r = 1, it is equal allocation. Default r = 1.}
 
-\item{f0}{Density function of control arm. f0(t) = lambda0\emph{exp(-lambda0}t) indicates T~exp(lambda0).}
+\item{h0}{Hazard function of control arm. h0(t) = log(2)/m0 means T~exponential distribution with median m0.}
 
-\item{f1}{Density function of control arm. f1(t) = lambda0\emph{exp(-lambda1}t) indicates T~exp(lambda1).}
+\item{S0}{Survival function of control arm. In general, S0(t) = exp(- integral of h0(u) for u from 0 to t).
+but providing S0(t) can improves computational efficiency and
+usually the survival function is known in study design. The density function f0(t) = h0(t) * S0(t).}
+
+\item{h1}{Hazard function of experimental arm. h1(t) = log(2)/m1 means T~exponential distribution with median m0.}
+
+\item{S1}{Survival function of experimental arm. In general, S1(t) = exp(- integral of h1(u) for u from 0 to t).
+but providing S1(t) can improves computational efficiency and
+usually the survival function is known in study design. The density function f1(t) = h1(t) * S1(t).}
 
 \item{F.entry}{Distribution function of enrollment. For uniform enrollment,
 F.entry(t) = (t/A) where A is the enrollment period, i.e., F.entry(t) = t/A for 0<=t<=A, and
@@ -48,7 +58,7 @@ An object with dataframes below.
 }
 }
 \description{
-This function calculations the expected number of events under alternative hypothesis
+This function calculates the expected number of events under alternative hypothesis
 at calendar time t, which is calculated from first subject randomized. The function
 returns the expected number of events for each arm at time t, based on the provided
 enrollment distribution function and random lost-to-followup distribution if applicable.
@@ -56,16 +66,24 @@ If the total sample size is not provided, then only the corresponding probabilit
 for each arm is provided.
 }
 \examples{
-Example (1) Trial scenario: 1:1 randomization, n = 450, enrollment follows non-uniform 
+#Example (1) Trial scenario: 1:1 randomization, n = 450, enrollment follows non-uniform 
 enrollment distribution with weight 1.5 and enrollment period is 18 months. 
 Control arm ~ exponential distribution with median 12 months, and 
 Experimental arm ~ exponential distribution (Proportional Hazards) with median 12 / 0.7 months.
 Assuming no lost-to-followup. Find the expected number of events at calendar time 24 months, i.e.
 6 months after last patient randomized.
 
+HR = 0.65; delay = 6; lambda0 = log(2) / 12; 
+h0 = function(t){lambda0}; S0 = function(t){exp(-lambda0 * t)}
+Hazard function and survival function for experimental arm
+lambda1 = lambda0 * HR
+h1 = function(t){lambda1}; S1= function(t){exp(-lambda1 * t)}
+F.entry = function(t){(t/18)^1.5*as.numeric(t <= 18) + as.numeric(t > 18)}
+
 maxT = 30
 nE = matrix(NA, nrow = maxT, ncol=3)
-for (T in 1:maxT) {o = nEvents(T = T, r = 1, f0 = function(t){dexp(t, log(2)/12)}, f1 = function(t){dexp(t, log(2)/12*0.70)}, F.entry = function(t){(t/18)^1.5*as.numeric(t <= 18) + as.numeric(t > 18)}, G.ltfu = 0, n = 450);
+for (T in 1:maxT) {
+  o = nEvents(T = T, r = 1, h0 = h0, S0 = S0, h1 = h1, S1 = S1, F.entry = F.entry, G.ltfu = 0, n = 450)
   nE[T, 1] = o$n.events$n.events0; nE[T, 2] = o$n.events$n.events1; nE[T, 3] = o$n.events$n.events.total
 }
 plot(1:maxT, nE[,3], type="n", xlab="Months", ylab = "Num of events")   
@@ -74,23 +92,22 @@ lines(1:maxT, nE[, 2], lty = 2, col=2)
 lines(1:maxT, nE[, 3], lty = 3, col=3)
 legend(0, max(nE), c("Control", "Experimental", "Total"), col=1:3, lty=1:3, bty="n", cex=0.8)
 
-Example (2) Same trial set up as example (1) but assuming delayed effect for 
+#Example (2) Same trial set up as example (1) but assuming delayed effect for 
 experimental arm. The delayed period is assumed 6 months, and after delay the
 hazard ratio is assumed 0.65.
 
-HR = 0.65; delay = 6; lambda0 = log(2) / 12
-hazard function for experimental arm
+HR = 0.65; delay = 6; lambda0 = log(2) / 12; 
+h0 = function(t){lambda0}; S0 = function(t){exp(-lambda0 * t)}
+Hazard function and survival function for experimental arm
 h1 = function(t){lambda0*as.numeric(t < delay)+HR*lambda0*as.numeric(t >= delay)}
 c = exp(-delay*lambda0*(1-HR)); 
 S1 = function(t){exp(-lambda0*t)*as.numeric(t<delay) + c*exp(-HR*lambda0*t)*as.numeric(t>=delay)}
-f1 = function(t){h1(t) * S1(t)}
-f0 = function(t){dexp(t, lambda0)}
 F.entry = function(t){(t/18)^1.5*as.numeric(t <= 18) + as.numeric(t > 18)}
 
 maxT = 30
 nE = matrix(NA, nrow = maxT, ncol=3)
 for (T in 1:maxT) {
-  o = nEvents(T = T, r = 1, f0 = f0, f1 = f1, F.entry = F.entry, G.ltfu = 0, n = 450);
+  o = nEvents(T = T, r = 1, h0 = h0, S0 = S0, h1 = h1, S1 = S1, F.entry = F.entry, G.ltfu = 0, n = 450);
   nE[T, 1] = o$n.events$n.events0; nE[T, 2] = o$n.events$n.events1; nE[T, 3] = o$n.events$n.events.total
 }
 plot(1:maxT, nE[,3], type="n", xlab="Months", ylab = "Num of events")   

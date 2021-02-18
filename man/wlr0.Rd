@@ -98,8 +98,8 @@ wlr0(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,
 wlr0(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1,0,1), rho=0, gamma=0, tau = 10, s.tau=0.5, side="one.sided")
 wlr0(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1,0,1), rho=0, gamma=0, tau = 10, s.tau=0, side="one.sided")
 ######################################
-Validation Note:
-Fully validated for unstratified version using nph::logrank.test() function.
+#Validation Note:
+#Fully validated for unstratified version using nph::logrank.test() function.
 ex1 = nph::logrank.test(time=time,   event=event,  group=group,  rho = 0,  gamma = 1.5)
 time=rexp(100); event=sample(c(0,1), 100, replace = TRUE); group=c(rep(0, 50), rep(1, 50)); 
 rho=0; gamma=1; tau = NULL; s.tau=0; strata1=sample(c(1,2), 100, replace = TRUE)

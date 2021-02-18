@@ -126,11 +126,11 @@ the same calendar time, i.e. the same analysis.
 }
 \examples{
 #Example (1) Trial scenario: 1:1 randomization, n = 450, enrollment follows non-uniform 
-enrollment distribution with weight 1.5 and enrollment period is 18 months. 
-Control arm ~ exponential distribution with median 12 months, and 
-Experimental arm ~ exponential distribution (Proportional Hazards) with median 12 / 0.7 months.
-Assuming no lost-to-followup. Find the expected number of events at calendar time 24 months, i.e.
-6 months after last patient randomized.
+#enrollment distribution with weight 1.5 and enrollment period is 18 months. 
+#Control arm ~ exponential distribution with median 12 months, and 
+#Experimental arm ~ exponential distribution (Proportional Hazards) with median 12 / 0.7 months.
+#Assuming no lost-to-followup. Find the expected number of events at calendar time 24 months, i.e.
+#6 months after last patient randomized.
 
 HR = 0.65; delay = 6; lambda0 = log(2) / 12; 
 h0 = function(t){lambda0}; S0 = function(t){exp(-lambda0 * t)}
