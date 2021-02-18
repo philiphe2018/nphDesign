@@ -70,6 +70,7 @@
 #' @examples
 #' wlr.cov(time=rexp(100), event=sample(c(0,1), 100, replace = TRUE), group=c(rep(0, 50), rep(1, 50)), rho1=0, gamma1=0, tau1 = NULL, s.tau1=0.5,rho2=0, gamma2=1, tau2 = NULL, s.tau2=0.5,f.ws1=NULL, f.ws2=NULL)
 #' wlr.cov(time=rexp(100), event=sample(c(0,1), 100, replace = TRUE), group=c(rep(0, 50), rep(1, 50)), rho1=0, gamma1=0, tau1 = NULL, s.tau1=0.5,rho2=0, gamma2=1, tau2 = NULL, s.tau2=0.5,f.ws1=NULL, f.ws2=NULL,strata1=sample(c(1,2), 100, replace = TRUE),strata2=sample(c(1,2), 100, replace = TRUE),strata3=sample(c(1,2), 100, replace = TRUE))
+#' 
 #' @export  
 #' 
 wlr.cov = function(time=c(5,7,10,12,12,15,20,20), event=c(1,0,0,1,1,0,1,1),
@@ -131,6 +132,14 @@ wlr.cov = function(time=c(5,7,10,12,12,15,20,20), event=c(1,0,0,1,1,0,1,1),
     o$data = data
     o$cov = cov
     o$corr = corr
+    if(!is.null(f.ws1)){wt1 = f.ws1} else{
+      wt1 = data.frame(cbind(rho1, gamma1, tau1, s.tau1))
+    }
+    if(!is.null(f.ws2)){wt2 = f.ws2} else{
+      wt2 = data.frame(cbind(rho2, gamma2, tau2, s.tau2))
+    }
+    o$wt1 = wt1
+    o$wt2 = wt2    
   }
   return(o)
 }

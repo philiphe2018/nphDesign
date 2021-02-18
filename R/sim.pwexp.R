@@ -54,10 +54,10 @@
 #' \item{cnsrCut}{Censor status after cut}
 #' }
 #' @examples
-#' Example (1): Simulate 10 samples from proportional hazards scenario. 
-#' Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 
-#' HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
-#' IA and FA are performed at 397 and 496 events respectively.
+#' #Example (1): Simulate 10 samples from proportional hazards scenario. 
+#' #Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 
+#' #HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
+#' #IA and FA are performed at 397 and 496 events respectively.
 #' 
 #' N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
 #' targetEvents = c(397, 496); lambda0 = log(2) / m0; lambda1 = log(2)/m0*hr; cuts = NULL;
@@ -67,11 +67,11 @@
 #' km.FA<-survival::survfit(survival::Surv(survTimeCut,1-cnsrCut)~treatment,data=sim.ph[[2]][sim==1,])
 #' plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
 #' 
-#' Example (2): Simulate 10 samples with delayed effect at month 6;
-#'  control arm has constant hazard (median 11.7 mo) and experimental arm has hr = 0.65 after delay.
-#' Total 672 pts, 1:1 randomization, control median OS 11.7 mo. 
-#' HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
-#' IA and FA are performed at 397 and 496 events respectively.
+#' #Example (2): Simulate 10 samples with delayed effect at month 6;
+#' #control arm has constant hazard (median 11.7 mo) and experimental arm has hr = 0.65 after delay.
+#' #Total 672 pts, 1:1 randomization, control median OS 11.7 mo. 
+#' #HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
+#' #IA and FA are performed at 397 and 496 events respectively.
 #' 
 #' N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
 #' targetEvents = c(397, 496); cuts = 6
@@ -83,13 +83,13 @@
 #' km.FA<-survival::survfit(survival::Surv(survTimeCut,1-cnsrCut)~treatment,data= sim.delay6[[2]][sim==1,])
 #' plot(km.FA,xlab="Month Since Randomization",ylab="Survival",lty=1:2,xlim=c(0,36))
 #' 
-#' Example (3): Simulate 10 samples with delayed effect at month 6 
-#' Control arm has crossover to subsequent IO after 24 mo, so its hazard decreases 20%.
-#' control arm has constant hazard (median 11.7 mo) and experimental arm has 
-#' hr = 1 and 0.65 at intervals (0, 6) and (6, 24) respectively.
-#' Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 
-#' HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
-#' IA and FA are performed at 397 and 496 events respectively.
+#' #Example (3): Simulate 10 samples with delayed effect at month 6 
+#' #Control arm has crossover to subsequent IO after 24 mo, so its hazard decreases 20%.
+#' #control arm has constant hazard (median 11.7 mo) and experimental arm has 
+#' #hr = 1 and 0.65 at intervals (0, 6) and (6, 24) respectively.
+#' #Total 672 pts, 1:1 randomization, control median OS 11.7 mo; 
+#' #HR = 0.65, enrollment 21 months, weight 1.5, no drop offs; 
+#' #IA and FA are performed at 397 and 496 events respectively.
 #' 
 #' N=672; m0 = 11.7; A=21; r=1; hr = 0.65; w = 1.5; dropOff0 = dropOff1 = 0; 
 #' targetEvents = c(397, 496); cuts = c(6, 24); crossTime = 24; crossEffect = 0.8

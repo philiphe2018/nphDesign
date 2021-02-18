@@ -147,18 +147,27 @@ wlr = function(time=c(5,7,10,12,12,15,20,20), event=c(1,0,0,1,1,0,1,1),
     V=uni.event.time$V
     z=sum(U[!is.nan(V)])/sqrt(sum(V[!is.nan(V)]))
     
-    test.side = side[1]
-    if(test.side == "one.sided") {p = 1-pnorm(z)} else {p = 2*(1-pnorm(abs(z)))}
+    if(side[1] == "one.sided") {
+      test.side = 1; p = 1-pnorm(z)
+      } else {
+        test.side = 2
+        p = 2*(1-pnorm(abs(z)))
+      }
     
     #create a dataframe to output the parameters
     chisq = z*z
-    test.results = data.frame(cbind(rho, gamma, tau, s.tau, test.side, z, chisq, p))
+    test.results = data.frame(cbind(test.side, z, chisq, p))
     
     o=list()
     o$uni.event.time = uni.event.time
     o$data = data
     o$test.results.strata = test.results.strata
     o$test.results = test.results
+
+    if(!is.null(f.ws)){wt = f.ws} else{
+      wt = data.frame(cbind(rho, gamma, tau, s.tau))
+    }
+    o$wt = wt
   }
   return(o)
 }

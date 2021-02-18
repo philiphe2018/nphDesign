@@ -78,11 +78,11 @@
 #'  
 #' @examples 
 #' #Example (1) Trial scenario: 1:1 randomization, n = 450, enrollment follows non-uniform 
-#' enrollment distribution with weight 1.5 and enrollment period is 18 months. 
-#' Control arm ~ exponential distribution with median 12 months, and 
-#' Experimental arm ~ exponential distribution (Proportional Hazards) with median 12 / 0.7 months.
-#' Assuming no lost-to-followup. Find the expected number of events at calendar time 24 months, i.e.
-#' 6 months after last patient randomized.
+#' #enrollment distribution with weight 1.5 and enrollment period is 18 months. 
+#' #Control arm ~ exponential distribution with median 12 months, and 
+#' #Experimental arm ~ exponential distribution (Proportional Hazards) with median 12 / 0.7 months.
+#' #Assuming no lost-to-followup. Find the expected number of events at calendar time 24 months, i.e.
+#' #6 months after last patient randomized.
 #' 
 #' HR = 0.65; delay = 6; lambda0 = log(2) / 12; 
 #' h0 = function(t){lambda0}; S0 = function(t){exp(-lambda0 * t)}
@@ -452,5 +452,14 @@ wlr.info = function(T = c(24,36), r = 1, n = 450, h0 = function(t){log(2)/12}, S
   o$cov.H1 = cov.H1  
   o$info.H1 = info.H1  
   o$corr.H1 = corr.H1
+  
+  if(!is.null(f.ws1)){wt1 = f.ws1} else{
+    wt1 = data.frame(cbind(rho1, gamma1, tau1, s.tau1))
+  }
+  if(!is.null(f.ws2)){wt2 = f.ws2} else{
+    wt2 = data.frame(cbind(rho2, gamma2, tau2, s.tau2))
+  }
+  o$wt1 = wt1
+  o$wt2 = wt2   
   return(o)
 }

@@ -91,11 +91,12 @@
 #'          }
 #' }
 #' @examples
-#' Covariance of Log-rank test and Fleming-Harrington (0, 1) with Log-rank at interim analysis and Fleming-Harrington (0, 1) at final analysis.
+#' #Covariance of Log-rank test and Fleming-Harrington (0, 1) with Log-rank at interim analysis and Fleming-Harrington (0, 1) at final analysis.
 #' data = sim.pwexp(nSim = 1,N = 672,A = 21,w = 1.5,r = 1,lambda0 = log(2)/11.7,lambda1 = log(2)/11.7 * 0.745,targetEvents = c(397, 496))
 #' data.IA = data[[1]]; data.FA = data[[2]]
 #' group = as.numeric(data.IA$treatment == "experimental")
 #' wlr.cov2t0(time1=data.IA$survTimeCut, event1=1-data.IA$cnsrCut, time2=data.FA$survTimeCut, event2=1-data.FA$cnsrCut, group=group, rho1=0, gamma1=0, tau1 = NULL, s.tau1=0,rho2=0, gamma2=1, tau2 = NULL, s.tau2=0,f.ws1=NULL, f.ws2=NULL)
+#' 
 #' @export  
 #' 
 wlr.cov2t0 = function(time1=c(5,7,10,12,12,15,20,20), event1=c(1,0,0,1,1,0,1,1),
@@ -212,6 +213,14 @@ wlr.cov2t0 = function(time1=c(5,7,10,12,12,15,20,20), event1=c(1,0,0,1,1,0,1,1),
   o$cov = V
   o$summary.events = summary.events
   
+  if(!is.null(f.ws1)){wt1 = f.ws1} else{
+    wt1 = data.frame(cbind(rho1, gamma1, tau1, s.tau1))
+  }
+  if(!is.null(f.ws2)){wt2 = f.ws2} else{
+    wt2 = data.frame(cbind(rho2, gamma2, tau2, s.tau2))
+  }
+  o$wt1 = wt1
+  o$wt2 = wt2   
   return(o)
 }
 

@@ -6,6 +6,7 @@
 #' @param r Randomization ratio r:1
 #' @return n0 and n1 for number of subjects for each month in two groups (n0: control; n1: experimental)
 #' @examples 
+#' #Enroll 600 patients in 24 months with accrual weight 2 and 2:1 randomization
 #' f.nEachMonth(N=600, A=24, w=2, r=2)
 #' @export
 f.nEachMonth = function (N=600, A=24, w=2, r=2) {

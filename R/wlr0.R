@@ -71,8 +71,8 @@
 #' wlr0(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1,0,1), rho=0, gamma=0, tau = 10, s.tau=0.5, side="one.sided")
 #' wlr0(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1,0,1), rho=0, gamma=0, tau = 10, s.tau=0, side="one.sided")
 #' ######################################
-#' Validation Note:
-#' Fully validated for unstratified version using nph::logrank.test() function.
+#' #Validation Note:
+#' #Fully validated for unstratified version using nph::logrank.test() function.
 #' ex1 = nph::logrank.test(time=time,   event=event,  group=group,  rho = 0,  gamma = 1.5)
 #' time=rexp(100); event=sample(c(0,1), 100, replace = TRUE); group=c(rep(0, 50), rep(1, 50)); 
 #' rho=0; gamma=1; tau = NULL; s.tau=0; strata1=sample(c(1,2), 100, replace = TRUE)
@@ -135,12 +135,16 @@ wlr0 = function(time=c(5,7,10,12,12,15,20,20), event=c(1,0,0,1,1,0,1,1),
   V=w^2*Y0*Y1/(Y^2)*(Y-dN)/(Y-1)*dN
   
   z=sum(U[!is.nan(V)])/sqrt(sum(V[!is.nan(V)]))
-  test.side = side[1]
-  if(test.side == "one.sided") {p = 1-pnorm(z)} else {p = 2*(1-pnorm(abs(z)))}
+  
+  if(side[1] == "one.sided") {
+    test.side = 1; p = 1-pnorm(z)
+  } else {
+      test.side = 2; p = 2*(1-pnorm(abs(z)))
+  }
   
   #create a dataframe to output the parameters
   chisq = z*z
-  test.results = data.frame(cbind(rho, gamma, tau, s.tau, test.side, z, chisq, p))
+  test.results = data.frame(cbind(z, chisq, p, test.side))
   
   #create a dataframe to output the list of unique event times and statistics
   uni.event.time = data.frame(cbind(u.eTime,Y0, Y1, Y, dN0, dN1, dN, s, s.til, w, U, V, z))
@@ -152,6 +156,9 @@ wlr0 = function(time=c(5,7,10,12,12,15,20,20), event=c(1,0,0,1,1,0,1,1),
   o$uni.event.time = uni.event.time
   o$data = data
   o$test.results = test.results
-  
+  if(!is.null(f.ws)){wt = f.ws} else{
+    wt = data.frame(cbind(rho, gamma, tau, s.tau))
+  }
+  o$wt = wt
   return(o)
 }
