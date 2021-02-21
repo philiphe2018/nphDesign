@@ -105,4 +105,5 @@ time=rexp(100); event=sample(c(0,1), 100, replace = TRUE); group=c(rep(0, 50), r
 rho=0; gamma=1; tau = NULL; s.tau=0; strata1=sample(c(1,2), 100, replace = TRUE)
 wlr0(time=time,   event=event,  group=group,  rho = 0,  gamma = 1.5, tau = NULL, s.tau=0)
 wlr0(time=time,   event=event,  group=group,  rho = 0,  gamma = 1.5, tau = NULL, s.tau=NULL, f.ws=function(s){1/max(s, 0.25)})
+
 }

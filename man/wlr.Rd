@@ -123,4 +123,5 @@ wlr(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1
 wlr(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1,0,1), rho=0, gamma=1, tau = 10, s.tau=0.5, side="one.sided")
 wlr(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1,0,1), rho=0, gamma=0, tau = 10, s.tau=0.5, side="one.sided")
 wlr(time=c(12,7,10,5,12,15,20,20), event=c(1,0,0,1,1,0,1,1), group=c(1,1,0,0,0,1,0,1), rho=0, gamma=0, tau = 10, s.tau=0, side="one.sided")
+
 }
