@@ -72,7 +72,10 @@ An object with dataframes below.
 \itemize{
 \item  AHR: Expected average hazard ratio
 \item  AHR.KP Kalbfleisch and Prentice (1981) method
-\item  var: Asymptotic variance of the expected average hazard ratio
+\item  var.logHR: Asymptotic variance of the log expected average hazard ratio
+\item  var.AHR: Asymptotic variance of the expected average hazard ratio using delta method
+\item  var.AHR.KP: Asymptotic variance of the expected average hazard ratio of
+Kalbfleisch and Prentice (1981) method using delta method
 \item  wt: Weight function used
 }
 }
