@@ -63,7 +63,10 @@
 #'  \itemize{
 #'  \item  AHR: Expected average hazard ratio
 #'  \item  AHR.KP Kalbfleisch and Prentice (1981) method
-#'  \item  var: Asymptotic variance of the expected average hazard ratio
+#'  \item  var.logHR: Asymptotic variance of the log expected average hazard ratio
+#'  \item  var.AHR: Asymptotic variance of the expected average hazard ratio using delta method
+#'  \item  var.AHR.KP: Asymptotic variance of the expected average hazard ratio of 
+#'  Kalbfleisch and Prentice (1981) method using delta method
 #'  \item  wt: Weight function used
 #'  }
 #'  
@@ -375,7 +378,9 @@ wlr.AHR = function(T = 24, r = 1, n = 450,
   o = list()
   o$AHR = AHR
   o$AHR.KP= AHR.KP
-  o$var = V
+  o$var.logHR = V
+  o$var.AHR = exp(2*AHR)*V
+  o$var.AHR.KP = exp(2*AHR.KP)*V
   if(!is.null(f.ws)){wt = f.ws} else{
     wt = data.frame(cbind(rho, gamma, tau, s.tau))
   }
